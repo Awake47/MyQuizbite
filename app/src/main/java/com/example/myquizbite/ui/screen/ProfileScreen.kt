@@ -26,6 +26,7 @@ import com.example.myquizbite.data.ThemeMode
 import com.example.myquizbite.data.local.entity.AchievementEntity
 import com.example.myquizbite.data.model.ProfileStats
 import com.example.myquizbite.data.model.User
+import com.example.myquizbite.data.model.UserRole
 import com.example.myquizbite.ui.theme.*
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -69,7 +70,28 @@ fun ProfileScreen(
                             }
                             Spacer(Modifier.width(16.dp))
                             Column {
-                                Text(it.displayName, style = MaterialTheme.typography.headlineSmall)
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    Text(it.displayName, style = MaterialTheme.typography.headlineSmall)
+                                    if (it.role != UserRole.STUDENT) {
+                                        val (badgeText, badgeColor) = when (it.role) {
+                                            UserRole.ADMIN -> "Админ" to MaterialTheme.colorScheme.error
+                                            UserRole.AUTHOR -> "Автор" to MaterialTheme.colorScheme.tertiary
+                                            else -> "" to MaterialTheme.colorScheme.primary
+                                        }
+                                        Surface(
+                                            color = badgeColor.copy(alpha = 0.15f),
+                                            shape = RoundedCornerShape(6.dp)
+                                        ) {
+                                            Text(
+                                                badgeText,
+                                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                                style = MaterialTheme.typography.labelSmall,
+                                                fontWeight = FontWeight.Bold,
+                                                color = badgeColor
+                                            )
+                                        }
+                                    }
+                                }
                                 Text(it.email, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }

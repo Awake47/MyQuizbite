@@ -11,6 +11,7 @@ object NavRoutes {
     const val InterviewRun = "interview_run/{mode}"
     const val Duel = "duel"
     const val DailyChallenge = "daily_challenge"
+    const val AdminPanel = "admin_panel"
 
     fun quizRun(quizId: String) = "quiz_run/$quizId"
     fun interviewRun(mode: String) = "interview_run/$mode"

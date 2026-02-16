@@ -19,4 +19,16 @@ interface QuestionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(questions: List<QuestionEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(question: QuestionEntity)
+
+    @Query("DELETE FROM questions WHERE id = :id")
+    fun deleteById(id: String)
+
+    @Query("SELECT COUNT(*) FROM questions")
+    fun getCount(): Int
+
+    @Query("SELECT COUNT(*) FROM questions WHERE topicId = :topicId")
+    fun getCountByTopic(topicId: String): Int
 }

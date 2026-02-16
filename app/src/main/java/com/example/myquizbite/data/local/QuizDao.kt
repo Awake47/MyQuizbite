@@ -22,4 +22,13 @@ interface QuizDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(quizzes: List<QuizEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(quiz: QuizEntity)
+
+    @Query("DELETE FROM quizzes WHERE id = :id")
+    fun deleteById(id: String)
+
+    @Query("SELECT COUNT(*) FROM quizzes")
+    fun getCount(): Int
 }

@@ -37,6 +37,7 @@ fun HomeScreen(
     loading: Boolean,
     streak: Int,
     totalXp: Int,
+    isAdmin: Boolean = false,
     newAchievements: List<AchievementEntity>,
     onRefresh: () -> Unit,
     onQuizClick: (String) -> Unit,
@@ -45,6 +46,7 @@ fun HomeScreen(
     onDuel: () -> Unit,
     onDailyChallenge: () -> Unit,
     onQuizList: () -> Unit,
+    onAdminPanel: () -> Unit = {},
     onDismissAchievements: () -> Unit
 ) {
     // Achievement popup
@@ -90,6 +92,11 @@ fun HomeScreen(
                     )
                 },
                 actions = {
+                    if (isAdmin) {
+                        IconButton(onClick = onAdminPanel) {
+                            Icon(Icons.Default.AdminPanelSettings, contentDescription = "Админ-панель", tint = MaterialTheme.colorScheme.error)
+                        }
+                    }
                     IconButton(onClick = onProfile) {
                         Icon(Icons.Default.Person, contentDescription = "Профиль")
                     }

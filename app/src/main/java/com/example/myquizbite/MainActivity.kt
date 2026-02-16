@@ -12,9 +12,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myquizbite.data.ThemeMode
 import com.example.myquizbite.data.model.Difficulty
+import com.example.myquizbite.data.model.UserRole
 import com.example.myquizbite.navigation.NavRoutes
 import com.example.myquizbite.ui.screen.*
 import com.example.myquizbite.ui.theme.MyQuizbiteTheme
+import com.example.myquizbite.ui.viewmodel.AdminViewModel
 import com.example.myquizbite.ui.viewmodel.AuthViewModel
 import com.example.myquizbite.ui.viewmodel.HomeViewModel
 import com.example.myquizbite.ui.viewmodel.InterviewViewModel
@@ -79,6 +81,7 @@ class MainActivity : ComponentActivity() {
                             loading = loading,
                             streak = streak,
                             totalXp = totalXp,
+                            isAdmin = user?.role == UserRole.ADMIN,
                             newAchievements = newAchievements,
                             onRefresh = { homeViewModel.load() },
                             onQuizClick = { id -> navController.navigate(NavRoutes.quizRun(id)) },
@@ -87,6 +90,7 @@ class MainActivity : ComponentActivity() {
                             onDuel = { navController.navigate(NavRoutes.Duel) },
                             onDailyChallenge = { dailyQuiz?.let { navController.navigate(NavRoutes.quizRun(it.id)) } ?: Unit },
                             onQuizList = { navController.navigate(NavRoutes.QuizList) },
+                            onAdminPanel = { navController.navigate(NavRoutes.AdminPanel) },
                             onDismissAchievements = { homeViewModel.clearNewAchievements() }
                         )
                     }
@@ -167,6 +171,32 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(NavRoutes.Duel) {
                         DuelScreen(onBack = { navController.popBackStack() })
+                    }
+                    composable(NavRoutes.AdminPanel) {
+                        val adminVm: AdminViewModel = viewModel()
+                        LaunchedEffect(Unit) { adminVm.load() }
+                        val stats by adminVm.stats.collectAsState()
+                        val questions by adminVm.questions.collectAsState()
+                        val quizzes by adminVm.quizzes.collectAsState()
+                        val topics by adminVm.topics.collectAsState()
+                        val message by adminVm.message.collectAsState()
+                        AdminPanelScreen(
+                            stats = stats,
+                            questions = questions,
+                            quizzes = quizzes,
+                            topics = topics,
+                            message = message,
+                            onDeleteQuestion = { adminVm.deleteQuestion(it) },
+                            onDeleteQuiz = { adminVm.deleteQuiz(it) },
+                            onAddQuestion = { topicId, text, options, correct, explanation, difficulty, code ->
+                                adminVm.addQuestion(topicId, text, options, correct, explanation, difficulty, code)
+                            },
+                            onAddQuiz = { topicId, title, desc, diff, qIds, time ->
+                                adminVm.addQuiz(topicId, title, desc, diff, qIds, time)
+                            },
+                            onDismissMessage = { adminVm.clearMessage() },
+                            onBack = { navController.popBackStack() }
+                        )
                     }
                 }
 
